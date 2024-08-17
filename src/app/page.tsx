@@ -7,8 +7,7 @@ import prisma from "./db";
 export default async function Home() {
 
   const blogs = await prisma.blog.findMany({
-    where: { isDraft: false },
-    include: { author: true },
+    where: { isDraft: false }
   });
 
   
