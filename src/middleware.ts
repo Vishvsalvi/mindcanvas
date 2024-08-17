@@ -6,8 +6,7 @@ export function middleware(request: NextRequest) {
   const isPublic = path === '/signin' || path === '/signup';
 
 
-    const token = request.cookies.get('__Host-next-auth.csrf-token')?.value || 
-                  request.cookies.get('__Secure-next-auth.session-token')?.value || '';
+    const token = request.cookies.get('__Secure-next-auth.session-token')?.value || '';
 
 
   // If the user is on a public page and has a token, redirect to home page
