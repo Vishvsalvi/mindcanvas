@@ -1,0 +1,42 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+.tiptap.ProseMirror {
+    outline: none;
+   
+}
+
+.prose{
+    max-width: none;
+}
+/* styles.css */
+.prose img {
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
+}
+
+
+.tiptap.ProseMirror img {
+    display: block;
+    max-width: none; /* Removes constraints on width to retain original resolution */
+    width: auto; /* Ensures images maintain their original size */
+    height: auto; /* Maintains aspect ratio */
+    margin: 10px 0; /* Adjust as needed */
+}
+
+.tiptap.ProseMirror p:has(img) {
+    display: flex;
+    flex-direction: column;
+    margin-top: 1rem;
+}
+.tiptap p.is-editor-empty:first-child::before {
+    color: #adb5bd;
+    content: attr(data-placeholder);
+    float: left;
+    height: 0;
+    pointer-events: none;
+  }
+      
