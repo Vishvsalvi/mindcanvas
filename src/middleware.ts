@@ -7,7 +7,7 @@ export function middleware(request: NextRequest) {
 
 
     const token = request.cookies.get('__Host-next-auth.csrf-token')?.value || 
-                  request.cookies.get('next-auth.session-token')?.value || '';
+                  request.cookies.get('__Secure-next-auth.session-token')?.value || '';
 
 
   // If the user is on a public page and has a token, redirect to home page
