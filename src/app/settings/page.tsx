@@ -108,7 +108,6 @@ const handleRemoveImage = async (): Promise<void> => {
     }
   }
 
-  const dummyImageUrl = 'https://res.cloudinary.com/vishvsalvi/image/upload/v1721191090/rc2mbagu5d4m36hk3buw.png'
 
   useEffect(() => {
    updateHandler();

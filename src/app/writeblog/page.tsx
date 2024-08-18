@@ -2,7 +2,7 @@
 import Sidebar from "@/components/Sidebar";
 import { Button } from "@/components/ui/button";
 import { CldUploadButton, CldImage } from "next-cloudinary";
-import { createPost, createDraftPost } from "@/app/actions/user";
+import { createPost, createNewDraftBlog } from "@/app/actions/user";
 import { deleteImage } from "../actions/user";
 import { useRecoilState } from "recoil";
 import { postState } from "@/app/store/atoms/editor";
@@ -111,6 +111,8 @@ export default function Page() {
                 tags
             );
 
+            console.log(newPost);
+
             if (newPost) {
                 toast({
                     title: "Post published successfully",
@@ -139,12 +141,12 @@ export default function Page() {
                 return;
             }
 
-            const newPost = await createDraftPost(
-                undefined,
+            const newPost = await createNewDraftBlog(
+                Number(user?.sub),
                 postContent.title,
                 postContent.editorContent,
                 postContent.coverImg,
-                Number(user?.sub)
+
             );
 
             if (newPost) {
@@ -159,6 +161,7 @@ export default function Page() {
                 });
                 router.push("/");
                 router.refresh();
+                return;
             }
         } catch (error) {
             console.error("Error creating post:", error);
@@ -320,6 +323,7 @@ export default function Page() {
                         <Editor
                             initialContent={postContent.editorContent}
                             editable={true}
+                            isWriteMode={true}
                             onChange={() => {}}
                         />
                         {/* <TipTapEditor  /> */}

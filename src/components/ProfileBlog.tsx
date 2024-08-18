@@ -46,7 +46,7 @@ export default function ProfileBlog({ title, description, date, imageUrl, blogId
 
     return (
         <div className="flex flex-col xl:flex-row mx-5 items-center my-10 gap-10">
-            <Link href={`http://localhost:3000/blog/${blogId}`} className="flex flex-col sm:flex-row w-full">
+            <Link href={`/blog/${blogId}`} className="flex flex-col sm:flex-row w-full">
                 <div className="px-4 py-2">
                     <h1 className="font-bold text-xl sm:text-2xl text-gray-900">
                         {title}

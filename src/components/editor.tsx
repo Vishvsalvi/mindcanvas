@@ -15,10 +15,10 @@ interface EditorProps {
     onChange: () => void;
     initialContent?: string;
     editable?: boolean;
-
+    isWriteMode?: boolean;
 }
 
-const Editor: React.FC<EditorProps> = ({ onChange, initialContent, editable }) => {
+const Editor: React.FC<EditorProps> = ({ onChange, initialContent, editable, isWriteMode }) => {
 
     const [editorState, setEditorState] = useRecoilState(postState);
     const [editorUpdateState, setEditorUpdateState] = useRecoilState(updateState);
@@ -36,6 +36,19 @@ const Editor: React.FC<EditorProps> = ({ onChange, initialContent, editable }) =
 
 
     const onChangeFunction = async () => {
+
+
+        // This is for write blog mode
+        if(isWriteMode) {
+            const string =  JSON.stringify(editor.document);
+            setEditorState((prev) => {
+                return {
+                    ...prev,
+                    editorContent: string
+                }
+            });
+        }
+
         // This is for edit blog mode
         if(initialContent && editable === true) {
             console.log('This is edit mode')
@@ -52,15 +65,6 @@ const Editor: React.FC<EditorProps> = ({ onChange, initialContent, editable }) =
             const blocksFromMarkdown = await editor.tryParseMarkdownToBlocks(initialContent);
             // console.log(blocksFromMarkdown);
             // editor.replaceBlocks(editor.document, blocksFromMarkdown);
-        }
-        else {
-            const string =  JSON.stringify(editor.document);
-            setEditorState((prev) => {
-                return {
-                    ...prev,
-                    editorContent: string
-                }
-            });
         }
             
     }

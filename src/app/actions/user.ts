@@ -87,8 +87,16 @@ export async function createDraftPost(
 
       return updatedPost;
     }
+  } catch (error) {
+    console.error("Error creating draft post:", error);
+    throw error;
+  }
+}
 
-    const newPost = await prisma.blog.create({
+export async function createNewDraftBlog(authorId: number, title: string, content: string = "", coverImageUrl?: string) {
+
+  try {
+    const newDraft = await prisma.blog.create({
       data: {
         title,
         content,
@@ -98,9 +106,9 @@ export async function createDraftPost(
       },
     });
 
-    return newPost;
+    return newDraft;
   } catch (error) {
-    console.error("Error creating draft post:", error);
+    console.error("Error creating new draft blog:", error);
     throw error;
   }
 }
