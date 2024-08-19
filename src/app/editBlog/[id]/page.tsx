@@ -15,6 +15,7 @@ import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, Dialog
 import { useToast } from "@/components/ui/use-toast";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import ButtonLoader from "@/components/loaders/ButtonLoader";
 
 interface Blog {
   title: string
@@ -34,6 +35,8 @@ export default function Page({ params }: { params: { id: number } }) {
 
   const { toast } = useToast();
   const router = useRouter();
+
+  const [isDeleteLoader, setIsDeleteLoader] = useState(false);
 
   const getBlog = async () => {
     const blog = await getBlogById(Number(params.id));
@@ -58,11 +61,15 @@ export default function Page({ params }: { params: { id: number } }) {
 
   const handleRemoveImage = async (): Promise<void> => {
     try {
+      setIsDeleteLoader(true);
       await deleteImage(postContent.coverImg);
-      setPostContent((prevState: any) => ({
-        ...prevState,
-        coverImg: "",
-      }));
+      setPostContent((prevState: any) => {
+        setIsDeleteLoader(false);
+        return {
+            ...prevState,
+            coverImg: "",
+        };
+    });
     } catch (error) {
       console.error("Failed to delete image:", error);
     }
@@ -267,27 +274,45 @@ export default function Page({ params }: { params: { id: number } }) {
         </div>
       </div>
       <div className="mt-24 grid grid-cols-1">
-        <div className="relative">
+        <div className="relative inline-block mx-5">
           {postContent.coverImg && (
             <>
-              <CldImage
-                className="mx-auto"
+              {/* Gray overlay for the disabled effect */}
+              <div className={`absolute inset-0 ${isDeleteLoader ? `bg-gray-100 opacity-50` : null}`}></div>
+
+              {/* Centered ButtonLoader */}
+
+              {
+                isDeleteLoader && (
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <ButtonLoader />
+                  </div>
+                )
+              }
+
+
+              {/* Image */}
+              <img
+                className="mx-auto block"
                 src={`https://res.cloudinary.com/vishvsalvi/image/upload/v1719501252/${postContent.coverImg}.png`}
                 alt="Cover"
-                width={1000}
-                height={600}
-                crop="scale"
               />
+
+              {/* Remove button */}
               <Button
                 variant="secondary"
-                className="absolute bottom-5 right-5 md:right-72"
+                className="absolute bottom-5 right-4 xl:right-80"
                 onClick={handleRemoveImage}
+                disabled={isDeleteLoader}
               >
-                Remove the Image
+                {
+                  isDeleteLoader ? "Removing..." : "Remove the Image"
+                }
               </Button>
             </>
           )}
         </div>
+
         <div className="lg:mx-[15.2rem] mx-14 mt-6">
           <CldUploadButton
             className={`text-sm font-medium border px-3 py-2 rounded-md hover:bg-gray-50 mb-5 ${postContent.coverImg ? 'hidden' : ''}`}

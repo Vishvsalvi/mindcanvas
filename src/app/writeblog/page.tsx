@@ -26,7 +26,9 @@ import WriteblogLoader from "@/components/loaders/writeblogLoader";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/components/ui/use-toast";
 import Link from "next/link";
-import { AspectRatio } from "@radix-ui/react-aspect-ratio";
+import ButtonLoader from "@/components/loaders/ButtonLoader";
+
+
 export default function Page() {
     const { toast } = useToast();
     const router = useRouter();
@@ -42,6 +44,7 @@ export default function Page() {
     };
 
     const [postContent, setPostContent] = useRecoilState(postState);
+    const [isDeleteLoader, setIsDeleteLoader] = useState(false);
 
     const handleUploadSuccess = (result: any) => {
         if (result.event === "success") {
@@ -57,8 +60,10 @@ export default function Page() {
 
     const handleRemoveImage = async (): Promise<void> => {
         try {
+            setIsDeleteLoader(true);
             await deleteImage(postContent.coverImg);
             setPostContent((prevState: any) => {
+                setIsDeleteLoader(false);
                 return {
                     ...prevState,
                     coverImg: "",
@@ -209,12 +214,11 @@ export default function Page() {
             <section className="">
                 {/* The main navbar of editor starts here */}
                 <div
-                    className={`flex justify-between w-full fixed top-0 left-0 right-0 bg-white pl-[0.5rem] pr-[0.5rem] py-4 z-50 transition-transform duration-300 ${
-                        isVisible ? "translate-y-0" : "-translate-y-full"
-                    }`}
+                    className={`flex justify-between w-full fixed top-0 left-0 right-0 bg-white pl-[0.5rem] pr-[0.5rem] py-4 z-50 transition-transform duration-300 ${isVisible ? "translate-y-0" : "-translate-y-full"
+                        }`}
                 >
                     <Link href="/" >
-                    <Button variant="outline" ><ArrowLeft className="w-10" /></Button>
+                        <Button variant="link" ><ArrowLeft className="w-10" /></Button>
                     </Link>
 
                     <div className="flex space-x-2">
@@ -271,33 +275,54 @@ export default function Page() {
                 </div>
                 {/* Ends here */}
 
-                <div className="mt-24 grid grid-cols-1 h-screen">
-                    <div className="relative">
-                        {postContent.coverImg && (
-                            <>
-                                <img
-                                    className="mx-auto"
-                                    src={`https://res.cloudinary.com/vishvsalvi/image/upload/v1719501252/${postContent.coverImg}.png`}
-                                    alt="Cover"
-                                    // width={1000}
-                                    // height={600}
-                                    // crop="scale"
-                                    />
-                                <Button
-                                    variant="secondary"
-                                    className="absolute bottom-5 right-5 md:right-72"
-                                    onClick={handleRemoveImage}
-                                >
-                                    Remove the Image
-                                </Button>
-                            </>
-                        )}
+                <div className="mt-24 grid grid-cols-1">
+                <div className="relative inline-block mx-5">
+    {postContent.coverImg && (
+        <>
+            {/* Gray overlay for the disabled effect */}
+            <div className={`absolute inset-0 ${isDeleteLoader?`bg-gray-100 opacity-50`:null}`}></div>
+
+            {/* Centered ButtonLoader */}
+
+            {
+                isDeleteLoader && (
+                    <div className="absolute inset-0 flex items-center justify-center">
+                        <ButtonLoader />
                     </div>
-                    <div className="lg:mx-[15.2rem] mx-14 mt-6">
+                )
+            }
+
+            
+            {/* Image */}
+            <img
+                className="mx-auto block"
+                src={`https://res.cloudinary.com/vishvsalvi/image/upload/v1719501252/${postContent.coverImg}.png`}
+                alt="Cover"
+            />
+
+            {/* Remove button */}
+            <Button
+                variant="secondary"
+                className="absolute bottom-5 right-4 xl:right-80"
+                onClick={handleRemoveImage}
+                disabled={isDeleteLoader}
+            >
+                {
+                    isDeleteLoader ? "Removing..." : "Remove the Image"
+                }
+            </Button>
+        </>
+    )}
+</div>
+
+
+
+
+
+                    <div className=" xl:mx-[17rem] mx-14 mt-6">
                         <CldUploadButton
-                            className={`text-sm font-medium border px-3 py-2 rounded-md hover:bg-gray-50 mb-5 ${
-                                postContent.coverImg ? "hidden" : ""
-                            }`}
+                            className={`text-sm font-medium border px-3 py-2 rounded-md hover:bg-gray-50 mb-5 ${postContent.coverImg ? "hidden" : ""
+                                }`}
                             options={{ maxFiles: 1 }}
                             uploadPreset="ai7umnnt"
                             onUpload={handleUploadSuccess}
@@ -306,7 +331,7 @@ export default function Page() {
                         </CldUploadButton>
 
                         <textarea
-                            className="w-full text-2xl sm:text-3xl md:text-4xl outline-none resize-none font-bold overflow-y-hidden"
+                            className="md:mt-5 w-full text-2xl sm:text-3xl md:text-4xl outline-none resize-none font-bold overflow-y-hidden"
                             placeholder="Article Title"
                             value={postContent.title}
                             onChange={(e) => {
@@ -324,7 +349,7 @@ export default function Page() {
                             initialContent={postContent.editorContent}
                             editable={true}
                             isWriteMode={true}
-                            onChange={() => {}}
+                            onChange={() => { }}
                         />
                         {/* <TipTapEditor  /> */}
                     </div>

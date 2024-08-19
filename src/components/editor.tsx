@@ -70,7 +70,7 @@ const Editor: React.FC<EditorProps> = ({ onChange, initialContent, editable, isW
     }
 
     return(
-        <div className="-mx-14" >
+        <div className="h-full -mx-14   " >
             <BlockNoteView editor={editor} editable={editable} theme="light" onChange={onChangeFunction} />
         </div>
     )

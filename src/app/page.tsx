@@ -12,9 +12,6 @@ export default async function Home() {
     include: { author: true },
   });
 
-  console.log("Data fetched!!")
-  
-  
   return (
     <main>
       <section className="text-center sm:text-start relative top-12 sm:mx-36 font-bold text-3xl whitespace-nowrap">
