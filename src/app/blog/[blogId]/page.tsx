@@ -8,12 +8,14 @@ import { formatDateToLongString } from '@/app/utils/dateConvertion';
 import { Skeleton } from "@/components/ui/skeleton"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import {getUserProfileImage} from "@/app/actions/user"
+import Link from "next/link";
 
 interface Blog {
     coverImageUrl?: string | undefined;
     title: string;
     content: string;
     createdAt: Date;
+    authorId: number;
 }
 
 export default function Page({ params }: { params: { blogId: string } }) {
@@ -21,13 +23,21 @@ export default function Page({ params }: { params: { blogId: string } }) {
     const { data: session } = useSession();
     const [blog, setBlog] = useState<Blog | null>(null);
 
-    const [profileImageUrl, setProfileImageUrl] = useState<string | null | undefined>("");
-
+    const [userData, setUserData] = useState<any | null>({
+        name: "",
+        image: "",
+    });
 
     useEffect(() => {
         const fetchBlog = async () => {
             const blogData = await getBlogById(Number(params.blogId));
-            setProfileImageUrl(await getUserProfileImage(Number(session?.user?.sub)));
+            const user = await getUserProfileImage(Number(blogData.authorId));
+            setUserData(
+                {
+                    name: user.name,
+                    image: user.image
+                }
+            );
             setBlog(blogData);
         };
         fetchBlog();
@@ -59,15 +69,17 @@ export default function Page({ params }: { params: { blogId: string } }) {
                 </div>
 
                 <div className="mx-auto flex items-center py-5 flex-row w-full justify-center flex-wrap sm:flex-nowrap text-center sm:text-left">
-                    <div className="w-full sm:w-auto rounded-full">
+                    {/* <div className="w-full sm:w-auto rounded-full">
+                    </div> */}
+                        <Link href={`/viewprofile/${blog.authorId}`} >
+                    <div className="text-gray-600 text-lg w-full sm:w-auto mt-2 sm:mt-0 sm:ml-4 flex items-center justify-center gap-2">
                         <Avatar>
-                            <AvatarImage src={`https://res.cloudinary.com/vishvsalvi/image/upload/v1719501252/${profileImageUrl ? profileImageUrl : "rc2mbagu5d4m36hk3buw"}.png`} />
+                            <AvatarImage className='object-cover' src={`https://res.cloudinary.com/vishvsalvi/image/upload/v1719501252/${userData ? userData.image : "rc2mbagu5d4m36hk3buw"}.png`} />
                             <AvatarFallback>{session?.user?.name}</AvatarFallback>
                         </Avatar>
+                        <span className="font-bold">{userData.name}</span>
                     </div>
-                    <div className="text-gray-600 text-lg w-full sm:w-auto mt-2 sm:mt-0 sm:ml-4">
-                        <span className="font-bold">{session?.user?.name}</span>
-                    </div>
+                        </Link>
                     <div className="w-full sm:w-auto mt-2 sm:mt-0 sm:ml-4">
                         <span>· {formatDateToLongString(blog.createdAt)} </span>
                     </div>
@@ -88,13 +100,13 @@ export default function Page({ params }: { params: { blogId: string } }) {
 
 const BlogLoader = () => {
     return (
-        <div className="flex flex-col space-y-3 w-full items-center">
-            <Skeleton className="h-[30rem] w-[50rem] rounded-xl" />
-            <div className="ml-[2.25rem] space-y-2 mx-10">
-                <Skeleton className="h-6 w-[50rem]" />
-                <Skeleton className="h-6 w-[45rem]" />
-                <Skeleton className="h-6 w-[50rem]" />
-                <Skeleton className="h-6 w-[45rem]" />
+        <div className="flex flex-col space-y-5 w-full items-center">
+            <Skeleton className="mt-5 h-[30rem] md:w-[45rem] w-[30rem] rounded-xl" />
+            <div className="space-y-2 mx-14">
+                <Skeleton className="h-6 md:w-[40rem] w-[20rem]" />
+                <Skeleton className="h-6 md:w-[45rem] w-[15rem]" />
+                <Skeleton className="h-6 md:w-[40rem] w-[20rem]" />
+                <Skeleton className="h-6 md:w-[45rem] w-[15rem]" />
 
             </div>
         </div>

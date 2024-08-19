@@ -326,9 +326,13 @@ export const getUserProfileImage = async (id: number) => {
   try {
     const user = await prisma.user.findUnique({
       where: { id },
+      
     });
 
-    return user?.profileImageUrl;
+    return   {
+      image: user?.profileImageUrl,
+      name: user?.name
+    };
   } catch (error) {
     console.error("Error getting user profile image:", error);
     throw error;

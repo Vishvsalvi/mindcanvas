@@ -4,15 +4,18 @@ import { Linkedin, Instagram, Github, Twitter, CalendarDays } from 'lucide-react
 import Link from 'next/link';
 import prisma from "./db";
 
-export default async function Home() {
-
+const getAllBlogs = async () => {
   const blogs = await prisma.blog.findMany({
     where: { isDraft: false },
     include: { author: true },
   });
+  return blogs;
+}
 
-  
-  
+export default async function Home() {
+
+  const blogs = await getAllBlogs();
+
   return (
     <main>
       <section className="text-center sm:text-start relative top-12 sm:mx-36 font-bold text-3xl whitespace-nowrap">
@@ -107,3 +110,4 @@ export default async function Home() {
     </main>
   );
 }
+
