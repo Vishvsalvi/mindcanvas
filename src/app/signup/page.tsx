@@ -19,9 +19,6 @@ import { signUp } from "../actions/user"
 import { useRouter } from "next/navigation"
 import bcrypt from "bcryptjs"
 
-import {validateNewUser} from "@/lib/validation"
-
-
 export default function Page() {
 
   const { toast } = useToast()
@@ -56,8 +53,8 @@ export default function Page() {
       toast({
         title: "Successfully Signed up"
       })
-      setLoading(false)
       router.push("/")
+      setLoading(false)
       return
     }
 

@@ -38,13 +38,9 @@ export default function page() {
       setLoading(false)
       return
     }
-    setLoading(false)
     router.push("/")
-  }
-
-  const submitHandler = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
-    
+    setLoading(false)
+    return
   }
 
   return (
