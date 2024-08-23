@@ -1,6 +1,6 @@
 "use client"
 import Link from 'next/link';
-import React from 'react';
+import React, {useState} from 'react';
 import { Button } from './ui/button';
 import {
     Dialog,
@@ -29,16 +29,14 @@ export default function ProfileBlog({ title, description, date, imageUrl, blogId
 
     const router = useRouter();
 
-    const removeHtmlTags = (str: string) => {
-        return str.replace(/<[^>]*>?/gm, '');
-    }
-
-    description = removeHtmlTags(description);
+    const [isDeleting, setIsDeleting] = useState(false);
 
     const deleteBlog = async (blogId: string) => {
         try {
-            await deleteBlogById(parseInt(blogId));
+            setIsDeleting(true);
+            await deleteBlogById(parseInt(blogId), imageUrl);
             router.refresh();
+            setIsDeleting(false);
         } catch (error) {
             console.error("Error deleting blog:", error);
         }
@@ -80,9 +78,15 @@ export default function ProfileBlog({ title, description, date, imageUrl, blogId
                                 </DialogDescription>
                             </DialogHeader>
                             <div className="flex items-center space-x-2 justify-end">
-                                <Button onClick={() => deleteBlog(blogId)} type="submit" variant="destructive" className="px-3">
-                                    Delete Blog
+                            <DialogClose asChild>
+                                <Button 
+                                disabled={isDeleting}
+                                onClick={() => deleteBlog(blogId)} type="submit" variant="destructive" className="px-3">
+                                   
+                                    {isDeleting ? 'Deleting...' : 'Delete'}
                                 </Button>
+                                </DialogClose>
+
                                 <DialogClose asChild>
                                     <Button type="submit" variant="outline" className="px-3">
                                         Cancel

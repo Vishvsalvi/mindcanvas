@@ -1,10 +1,12 @@
 
 import React from 'react'
-import { getDrafts } from '../actions/user';
+import { getDrafts, deleteBlogById } from '../actions/user';
 import { Button } from '@/components/ui/button'
 import { getServerSession } from "next-auth/next"
-import {NEXT_AUTH} from "@/lib/auth";
+import { NEXT_AUTH } from "@/lib/auth";
 import Link from 'next/link';
+import Draft from '@/components/Draft';
+
 // import { useCreateBlockNote } from "@blocknote/react";
 
 export default async function Page() {
@@ -16,10 +18,10 @@ export default async function Page() {
     const drafts = await getDrafts(Number(session?.user.sub));
 
     function formatDateToLongString(date: Date): string {
-        const options: Intl.DateTimeFormatOptions = { 
-            year: 'numeric', 
-            month: 'long', 
-            day: 'numeric' 
+        const options: Intl.DateTimeFormatOptions = {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
         };
         return date.toLocaleDateString('en-US', options);
     }
@@ -36,46 +38,20 @@ export default async function Page() {
                     }
                 </div>
 
-                      
+
                 <div className="grid grid-cols-1 mt-10" >
 
-                   {
-                          drafts.map((draft, index) => (
-                            
-                            <DraftCard key={index} title={draft.title} content={draft.content} date={formatDateToLongString(draft.createdAt)} id={draft.id} />
-                          ))
-                   }
+                    {
+                        drafts.map((draft, index) => (
+
+                            <Draft key={index} title={draft.title} content={draft.content} date={formatDateToLongString(draft.createdAt)} id={draft.id} imageUrl={draft.coverImageUrl || null} />
+                        ))
+                    }
 
                 </div>
             </div>
-          
+
         </>
     )
 }
 
-const DraftCard = (
-
-
-    {title, content, date, id} : {title: string, content: string, date: string, id: number}
-) => {
-
-   
-
-return (
-    <div className='py-5 px-3 mx-5 rounded-md' >
-    <div>
-    <small className="md:border-l md:border-zinc-700 md:pl-4 text-zinc-500 block">{date}</small>
-        <h2 className='font-medium text-xl my-2' > {title} </h2>
-        <p className='text-sm' >Lorem, ipsum dolor sit amet consectetur adipisicing elit. Doloremque veniam temporibus asperiores eius voluptatibus? Dolorum ipsum voluptas saepe deserunt nulla.</p>
-
-    </div>
-    <div className='flex gap-2 my-2' >
-        <Link href={`/editBlog/${id}`} >
-    <Button variant="outline">Edit</Button>
-        </Link>
-    <Button variant="outline" className='hover:bg-red-500 hover:text-white'>Delete</Button>
-    </div>
-        
-</div>
-)
-}

@@ -37,13 +37,15 @@ const Editor: React.FC<EditorProps> = ({ onChange, initialContent, editable, isW
 
     const onChangeFunction = async () => {
 
-
         // This is for write blog mode
         if(isWriteMode) {
             const string =  JSON.stringify(editor.document);
+            const blockToHtml = await editor.blocksToHTMLLossy(editor.document);
+            console.log(blockToHtml);
             setEditorState((prev) => {
                 return {
                     ...prev,
+                    preview: blockToHtml,
                     editorContent: string
                 }
             });
@@ -51,11 +53,13 @@ const Editor: React.FC<EditorProps> = ({ onChange, initialContent, editable, isW
 
         // This is for edit blog mode
         if(initialContent && editable === true) {
-            console.log('This is edit mode')
             const string =  JSON.stringify(editor.document);
+            const blockToHtml = await editor.blocksToHTMLLossy(editor.document);
+
             setEditorUpdateState((prev) => {
                 return {
                     ...prev,
+                    preview: blockToHtml,
                     editorContent: string
                 }
             });
@@ -63,6 +67,7 @@ const Editor: React.FC<EditorProps> = ({ onChange, initialContent, editable, isW
         // This is for read blog mode
         else if (editable === false && initialContent) {
             const blocksFromMarkdown = await editor.tryParseMarkdownToBlocks(initialContent);
+            console.log(blocksFromMarkdown);
             // console.log(blocksFromMarkdown);
             // editor.replaceBlocks(editor.document, blocksFromMarkdown);
         }

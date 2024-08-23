@@ -234,7 +234,7 @@ if(userData.email && userData.name){
             })
           }}
           value={userData.name} className={commonInputClassName} placeholder='Enter name' type="text" />
-          <br />
+          {/* <br />
           <label htmlFor="">Email</label>
           <input 
              onChange={(e) => {
@@ -245,7 +245,7 @@ if(userData.email && userData.name){
                 }
               })
             }}
-          value={userData.email} className={commonInputClassName} placeholder='Enter email' type="text" />
+          value={userData.email} className={commonInputClassName} placeholder='Enter email' type="text" /> */}
           <br />
           <label htmlFor="">Profile Tagline</label>
           <input

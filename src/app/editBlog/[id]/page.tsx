@@ -16,6 +16,7 @@ import { useToast } from "@/components/ui/use-toast";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import ButtonLoader from "@/components/loaders/ButtonLoader";
+import { htmlParser } from "@/app/utils/htmlParser";
 
 interface Blog {
   title: string
@@ -159,6 +160,9 @@ export default function Page({ params }: { params: { id: number } }) {
         return;
       }
 
+      const htmlContent =  htmlParser(postContent.preview).slice(0, 200);
+
+
       if (tags.length === 0) {
         toast({
 
@@ -168,7 +172,7 @@ export default function Page({ params }: { params: { id: number } }) {
         return;
       }
 
-      const publishedBlog = await draftToPublished(Number(params.id), tags);
+      const publishedBlog = await draftToPublished(Number(params.id), tags, htmlContent);
 
       if (publishedBlog) {
         toast({
@@ -181,6 +185,7 @@ export default function Page({ params }: { params: { id: number } }) {
           editorContent: "",
           coverImg: "",
           tags: [],
+          preview: ""
         });
         router.push(`/`);
       }

@@ -44,6 +44,7 @@ model Blog {
   comments      Comment[] 
   tags          String[]  @default([])
   isDraft       Boolean   @default(false)
+  preview       String
 }
 
 model Comment {

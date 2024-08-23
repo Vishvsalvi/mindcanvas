@@ -27,7 +27,7 @@ export default async function Home() {
                   key={blog.id}
                   id={blog.id}
                   title={blog.title}
-                  content={blog.content}
+                  content={blog.preview}
                   coverImageUrl={blog.coverImageUrl ?? ''}
                   authorId={blog.authorId}
                   isDraft={blog.isDraft}

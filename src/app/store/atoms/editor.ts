@@ -6,6 +6,7 @@ export const postState = atom({
         title: '',
         editorContent: '',
         coverImg: '',
+        preview: '',
         
     }
 })
@@ -16,11 +17,7 @@ export const updateState = atom({
         title: '',
         editorContent: '',
         coverImg: '',
-        tags: []
+        tags: [],
+        preview: ''
     }
-})
-
-export const userIdState = atom({
-    key: "userIdState",
-    default: null
 })

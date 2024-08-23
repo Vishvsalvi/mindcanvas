@@ -104,12 +104,13 @@ export default async function Page({ params }: { params: { id: number } }) {
                             user?.blogs.map((blog, index) => {
                                 if (blog.isDraft) return null;
 
-                                const shortDescription = blog.content.substring(0, 100);
+                                const previewSlice = blog.preview.slice(0, 100);
+                                
                                 return (
                                     <ProfileBlog
                                         key={index}
                                         title={blog.title}
-                                        description={shortDescription}
+                                        description={previewSlice}
                                         date={blog.createdAt}
                                         imageUrl={blog.coverImageUrl ?? ''}
                                         blogId={blog.id.toString()}

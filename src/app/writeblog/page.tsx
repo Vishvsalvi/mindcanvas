@@ -27,7 +27,7 @@ import { useRouter } from "next/navigation";
 import { useToast } from "@/components/ui/use-toast";
 import Link from "next/link";
 import ButtonLoader from "@/components/loaders/ButtonLoader";
-
+import { htmlParser } from "../utils/htmlParser";
 
 export default function Page() {
     const { toast } = useToast();
@@ -108,12 +108,16 @@ export default function Page() {
                 return;
             }
 
+            const htmlContent =  htmlParser(postContent.preview).slice(0, 200);
+            console.log(htmlContent)
+
             const newPost = await createPost(
                 postContent.title,
                 postContent.editorContent,
                 postContent.coverImg,
                 Number(user?.sub),
-                tags
+                tags,
+                htmlContent
             );
 
             console.log(newPost);
@@ -127,6 +131,7 @@ export default function Page() {
                     title: "",
                     editorContent: "",
                     coverImg: "",
+                    preview: ""
                 });
                 router.push("/");
                 router.refresh();
@@ -163,6 +168,7 @@ export default function Page() {
                     title: "",
                     editorContent: "",
                     coverImg: "",
+                    preview: ""
                 });
                 router.push("/");
                 router.refresh();
@@ -208,6 +214,10 @@ export default function Page() {
             window.removeEventListener("scroll", controlNavbar);
         };
     }, [lastScrollY]);
+
+    useEffect(() => {
+        console.log(postContent.preview);
+    }, [postContent.preview]);
 
     return (
         <Suspense fallback={<WriteblogLoader />}>

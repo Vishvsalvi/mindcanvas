@@ -20,9 +20,7 @@ interface BlogCardProps {
 
 export default function BlogCard({id, title, content, coverImageUrl, authorId, tags, authorName, authorImage, publishedAt}: BlogCardProps) {
 
-  const filterContent = content.replace(/<[^>]*>?/gm, '').slice(0, 200);
   const publishedDate = new Date(publishedAt);
-  const formattedDate = publishedDate.toLocaleDateString('en-US', { year: 'numeric', month: 'long' });
 
   function formatDateToLongString(date: Date): string {
     const options: Intl.DateTimeFormatOptions = { 
@@ -56,7 +54,7 @@ export default function BlogCard({id, title, content, coverImageUrl, authorId, t
               {title}
             </h1>
             <h2 className='text-gray-600 text-sm hidden sm:block'>
-              {filterContent}
+              {content} ...
             </h2>
           </div>
 

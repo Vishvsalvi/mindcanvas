@@ -40,6 +40,7 @@ export default function Page() {
     const {name, email, phoneNumber, password} = user
     const hashPass = bcrypt.hashSync(user.password, 10)
     const isSignUp = await signUp(name, phoneNumber, email, hashPass);
+    console.log(isSignUp)
     if(isSignUp?.message){
       toast({
         description: isSignUp?.message,
@@ -57,13 +58,15 @@ export default function Page() {
       setLoading(false)
       return
     }
-
     toast({
       description: "User already exists with the same email or phone number! Please sign in",
       variant: "destructive"
     })
+    setLoading(false);
+    return;
 
-  }
+  } 
+
 
   return (
     <Card className="mt-10 mx-auto max-w-sm">

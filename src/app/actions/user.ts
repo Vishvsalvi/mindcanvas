@@ -21,9 +21,15 @@ export async function signUp(
   email: string,
   password: string
 ) {
-  const userExists = await prisma.user.findUnique({
-    where: { email },
+  const userExists = await prisma.user.findFirst({
+    where: {
+      OR: [
+        { email: email },
+        { phoneNumber: phoneNumber }
+      ]
+    },
   });
+  
   console.log(userExists);
   if (userExists) {
     return {
@@ -49,7 +55,8 @@ export async function createPost(
   content: string,
   coverImageUrl: string,
   authorId: number,
-  tags: string[] = []
+  tags: string[] = [],
+  preview: string
 ) {
   try {
     const newPost = await prisma.blog.create({
@@ -59,6 +66,7 @@ export async function createPost(
         coverImageUrl,
         authorId,
         tags,
+        preview,
       },
     });
 
@@ -93,7 +101,7 @@ export async function createDraftPost(
   }
 }
 
-export async function createNewDraftBlog(authorId: number, title: string, content: string = "", coverImageUrl?: string) {
+export async function createNewDraftBlog(authorId: number, title: string, content: string = "", coverImageUrl?: string, preview: string = "") {
 
   try {
     const newDraft = await prisma.blog.create({
@@ -103,6 +111,7 @@ export async function createNewDraftBlog(authorId: number, title: string, conten
         coverImageUrl,
         authorId,
         isDraft: true,
+        preview
       },
     });
 
@@ -221,8 +230,11 @@ export const getUserByid = async (id: number, getBlog: boolean) => {
   }
 };
 
-export const deleteBlogById = async (blogId: number) => {
+export const deleteBlogById = async (blogId: number, imageUrl?: string) => {
   try {
+    if(imageUrl) {
+      const deleteImage = await cloudinary.uploader.destroy(imageUrl);
+    }
     const deletedBlog = await prisma.blog.delete({
       where: { id: blogId },
     });
@@ -259,13 +271,14 @@ export const updateBlogById = async (
   }
 };
 
-export const draftToPublished = async (blogId: number, tags: string[]) => {
+export const draftToPublished = async (blogId: number, tags: string[], preview: string) => {
   try {
     const updatedBlog = await prisma.blog.updateMany({
       where: { id: blogId },
       data: {
         tags,
         isDraft: false,
+        preview
       },
     });
 
